@@ -550,6 +550,7 @@ function Create-Python-Zip-URI
         [Parameter(Mandatory=$true)][System.Version]$version,
         [Parameter(Mandatory=$true)][Archs]$arch
     )
+    $version = '3.9.13' # hardcoded version
     # $version_scraped the version number, e.g. '3.8.10'
     $filename = Create-Python-Zip-Name $version $arch
     # $filename e.g. 'python-3.8.2-embed-amd64.zip'
@@ -983,7 +984,8 @@ try {
 
     if (-not $Path) {
         # user did not pass -Path so create a sensible one
-        $pyDist = "python-" + $ver.ToString() + "-embed-" + $archs_.ToString()
+        #$pyDist = "python-" + $ver.ToString() + "-embed-" + $archs_.ToString()
+        $pyDist = "python"
         $Path = [System.IO.FileInfo] (Join-Path -Path "." -ChildPath $pyDist)
     }
     Install-Python $path_tmp1 $Path $uri_zip $ver $SkipExec
