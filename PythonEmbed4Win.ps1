@@ -80,11 +80,11 @@
 .NOTES
     Author: James Thomas Moon
 #>
-[Cmdletbinding()]
+[Cmdletbinding(DefaultParameterSetName = 'Install')]
 Param (
     [Parameter(ParameterSetName = 'Install')]
     [System.IO.FileInfo] $Path,
-    [Parameter(ParameterSetName = 'Install')]
+    [Parameter(ParameterSetName = 'Install', ValueFromPipeline=$true)]
     [String] $Version,
     # TODO: how to set a script Param to custom Enum type `Archs`?
     #       placing the definition of `Archs` before this Param declaration
@@ -569,6 +569,8 @@ function Create-Python-Zip-URI
         [Parameter(Mandatory=$true)][Archs]$arch
     )
     # $version_scraped the version number, e.g. '3.8.10'
+    # add the next value to set a specific version. note we have to specify here the full version (major.minor.micro) e.g '3.9.13' or '3.10.11'
+    $Version = '3.9.13'
     $filename = Create-Python-Zip-Name $version $arch
     # $filename e.g. 'python-3.8.2-embed-amd64.zip'
     # XXX: [URI] does not have an append method? disappoint.
@@ -1002,7 +1004,9 @@ try {
 
     if (-not $Path) {
         # user did not pass -Path so create a sensible one
-        $pyDist = "python-" + $ver.ToString() + "-embed-" + $archs_.ToString()
+        #$pyDist = "python-" + $ver.ToString() + "-embed-" + $archs_.ToString()
+        # The above was changed to the following to adjust default destination folder named python at the same directory where the script running from
+        $pyDist = "python"
         $Path = [System.IO.FileInfo] (Join-Path -Path "." -ChildPath $pyDist)
     }
     Install-Python $path_tmp1 $Path $uri_zip $ver $SkipExec
